@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthForm } from './components/AuthForm';
@@ -9,7 +9,7 @@ import { Sidebar } from './components/Sidebar';
 import { supabase } from './lib/supabase';
 
 function App() {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<unknown>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
