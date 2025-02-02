@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
-import { Lock, Mail, User } from 'lucide-react';
+import { Lock, Mail, User, Eye, EyeOff } from 'lucide-react';
 
 interface AuthFormProps {
   type: 'login' | 'register';
@@ -13,6 +13,7 @@ export function AuthForm({ type }: AuthFormProps) {
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false); // Tambahkan state ini
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -53,7 +54,7 @@ export function AuthForm({ type }: AuthFormProps) {
         <div className="bg-gray-800/50 p-4 md:p-8 rounded-2xl shadow-xl backdrop-blur-sm border border-gray-700">
           <div className="text-center mb-4 md:mb-8">
             <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">{type === 'login' ? 'Selamat Datang Kembali' : 'Buat Akun'}</h2>
-            <p className="text-gray-400 text-sm md:text-base">{type === 'login' ? 'Masukkan kredensial Anda untuk mengakses akun' : 'Daftar untuk mulai mengelola backtest Anda'}</p>
+            <p className="text-gray-400 text-sm md:text-base">{type === 'login' ? 'Masukkan kredensial Anda untuk mengakses akun' : 'Daftar untuk mulai mengelola Backtest Anda'}</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
@@ -86,13 +87,20 @@ export function AuthForm({ type }: AuthFormProps) {
             <div className="relative">
               <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
               <input
-                type="password"
+                type={showPassword ? 'text' : 'password'} // Gunakan state showPassword
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Kata Sandi"
                 className="w-full pl-10 pr-4 py-2 md:py-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-gray-400"
                 required
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)} // Toggle showPassword state
+                className="absolute right-3 top-3 h-5 w-5 text-gray-400 hover:text-gray-200"
+              >
+                {showPassword ? <EyeOff /> : <Eye />} {/* Gunakan ikon mata */}
+              </button>
             </div>
 
             <button type="submit" className="w-full py-2 md:py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200 relative" disabled={loading}>
