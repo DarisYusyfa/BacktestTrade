@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
-import { Lock, Mail } from 'lucide-react';
+import { Lock, Mail, User } from 'lucide-react';
 
 interface AuthFormProps {
   type: 'login' | 'register';
@@ -11,6 +11,7 @@ interface AuthFormProps {
 export function AuthForm({ type }: AuthFormProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -22,6 +23,11 @@ export function AuthForm({ type }: AuthFormProps) {
         const { error } = await supabase.auth.signUp({
           email,
           password,
+          options: {
+            data: {
+              username: username,
+            },
+          },
         });
         if (error) throw error;
         toast.success('Registrasi berhasil! Silakan cek email Anda.');
@@ -51,6 +57,20 @@ export function AuthForm({ type }: AuthFormProps) {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
+            {type === 'register' && (
+              <div className="relative">
+                <User className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                <input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  placeholder="Username"
+                  className="w-full pl-10 pr-4 py-2 md:py-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-gray-400"
+                  required
+                />
+              </div>
+            )}
+
             <div className="relative">
               <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
               <input

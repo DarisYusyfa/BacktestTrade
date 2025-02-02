@@ -8,7 +8,7 @@ interface SidebarProps {
     email: string;
     user_metadata?: {
       avatar_url?: string;
-      full_name?: string;
+      username?: string;
     };
   };
 }
@@ -16,7 +16,7 @@ interface SidebarProps {
 export function Sidebar({ user }: SidebarProps) {
   const location = useLocation();
   const navigate = useNavigate();
-  const [isOpen, setIsOpen] = React.useState(false); // State untuk mengontrol buka/tutup sidebar
+  const [isOpen, setIsOpen] = React.useState(false);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -32,12 +32,12 @@ export function Sidebar({ user }: SidebarProps) {
 
   return (
     <>
-      {/* Button Hamburger untuk Mobile */}
+      {/* Mobile Hamburger Button */}
       <button className="md:hidden fixed top-2 left-4 z-50 bg-gray-800 p-2 rounded-full text-white shadow-lg hover:bg-gray-700 transition-colors focus:outline-none" onClick={() => setIsOpen(!isOpen)}>
         {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
       </button>
 
-      {/* Overlay untuk Mobile (muncul saat sidebar terbuka) */}
+      {/* Mobile Overlay */}
       {isOpen && <div className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden" onClick={() => setIsOpen(false)} />}
 
       {/* Sidebar */}
@@ -46,16 +46,16 @@ export function Sidebar({ user }: SidebarProps) {
           isOpen ? 'translate-x-0' : '-translate-x-full'
         } md:translate-x-0 md:relative md:w-64 z-50`}
       >
-        {/* Judul Sidebar */}
+        {/* Sidebar Header */}
         <div className="p-4 flex justify-between items-center pt-12">
           <h1 className="text-xl font-bold text-white">RizsFx</h1>
-          {/* Tombol Close untuk Mobile */}
+          {/* Mobile Close Button */}
           <button className="md:hidden text-gray-400 hover:text-white focus:outline-none" onClick={() => setIsOpen(false)}>
             <X className="h-6 w-6" />
           </button>
         </div>
 
-        {/* Menu Items */}
+        {/* Navigation Menu */}
         <nav className="flex-1">
           {menuItems.map((item) => {
             const Icon = item.icon;
@@ -64,7 +64,7 @@ export function Sidebar({ user }: SidebarProps) {
                 key={item.path}
                 to={item.path}
                 className={`flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-gray-800 hover:text-white transition-colors ${location.pathname === item.path ? 'bg-gray-800 text-white' : ''}`}
-                onClick={() => setIsOpen(false)} // Tutup sidebar saat menu diklik (mobile)
+                onClick={() => setIsOpen(false)}
               >
                 <Icon className="h-5 w-5" />
                 <span>{item.label}</span>
@@ -73,18 +73,18 @@ export function Sidebar({ user }: SidebarProps) {
           })}
         </nav>
 
-        {/* User Info & Logout */}
+        {/* User Profile & Logout */}
         <div className="p-4 border-t border-gray-700">
           <div className="flex items-center gap-3 mb-4">
             <div className="h-10 w-10 rounded-full bg-gray-700 overflow-hidden">
               {user.user_metadata?.avatar_url ? (
                 <img src={user.user_metadata.avatar_url} alt="Profile" className="h-full w-full object-cover" />
               ) : (
-                <div className="h-full w-full flex items-center justify-center bg-blue-600 text-white text-lg font-semibold">{user.email?.[0].toUpperCase() || 'U'}</div>
+                <div className="h-full w-full flex items-center justify-center bg-blue-600 text-white text-lg font-semibold">{user.user_metadata?.username?.[0]?.toUpperCase() || user.email?.[0]?.toUpperCase() || 'U'}</div>
               )}
             </div>
             <div>
-              <p className="text-white font-medium">{user.user_metadata?.full_name || user.email || 'Unknown User'}</p>
+              <p className="text-white font-medium">{user.user_metadata?.username || user.email || 'Unknown User'}</p>
               <p className="text-sm text-gray-400">{user.email || 'No Email'}</p>
             </div>
           </div>
