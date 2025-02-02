@@ -20,8 +20,10 @@ export function NewBacktest() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('No user found');
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) throw new Error('Pengguna tidak ditemukan');
 
       const { error } = await supabase.from('backtests').insert([
         {
@@ -31,10 +33,14 @@ export function NewBacktest() {
       ]);
 
       if (error) throw error;
-      toast.success('Backtest added successfully!');
+      toast.success('Backtest berhasil ditambahkan!');
       navigate('/dashboard');
-    } catch (error: any) {
-      toast.error(error.message);
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error('Terjadi kesalahan yang tidak terduga.');
+      }
     }
   };
 
@@ -44,45 +50,16 @@ export function NewBacktest() {
       <form onSubmit={handleSubmit} className="max-w-2xl space-y-6">
         <div className="grid grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-2">
-              Strategy Name
-            </label>
-            <input
-              type="text"
-              value={formData.strategy_name}
-              onChange={(e) =>
-                setFormData({ ...formData, strategy_name: e.target.value })
-              }
-              className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white"
-              required
-            />
+            <label className="block text-sm font-medium text-gray-400 mb-2">Strategy Name</label>
+            <input type="text" value={formData.strategy_name} onChange={(e) => setFormData({ ...formData, strategy_name: e.target.value })} className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white" required />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-2">
-              Instrument
-            </label>
-            <input
-              type="text"
-              value={formData.instrument}
-              onChange={(e) =>
-                setFormData({ ...formData, instrument: e.target.value })
-              }
-              className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white"
-              required
-            />
+            <label className="block text-sm font-medium text-gray-400 mb-2">Instrument</label>
+            <input type="text" value={formData.instrument} onChange={(e) => setFormData({ ...formData, instrument: e.target.value })} className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white" required />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-2">
-              Timeframe
-            </label>
-            <select
-              value={formData.timeframe}
-              onChange={(e) =>
-                setFormData({ ...formData, timeframe: e.target.value })
-              }
-              className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white"
-              required
-            >
+            <label className="block text-sm font-medium text-gray-400 mb-2">Timeframe</label>
+            <select value={formData.timeframe} onChange={(e) => setFormData({ ...formData, timeframe: e.target.value })} className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white" required>
               <option value="">Select Timeframe</option>
               <option value="M1">M1</option>
               <option value="M5">M5</option>
@@ -94,24 +71,18 @@ export function NewBacktest() {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-2">
-              Lot Size
-            </label>
+            <label className="block text-sm font-medium text-gray-400 mb-2">Lot Size</label>
             <input
               type="number"
               step="0.01"
               value={formData.lot_size}
-              onChange={(e) =>
-                setFormData({ ...formData, lot_size: parseFloat(e.target.value) })
-              }
+              onChange={(e) => setFormData({ ...formData, lot_size: parseFloat(e.target.value) })}
               className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white"
               required
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-2">
-              Initial Capital
-            </label>
+            <label className="block text-sm font-medium text-gray-400 mb-2">Initial Capital</label>
             <input
               type="number"
               value={formData.initial_capital}
@@ -126,9 +97,7 @@ export function NewBacktest() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-2">
-              Profit/Loss
-            </label>
+            <label className="block text-sm font-medium text-gray-400 mb-2">Profit/Loss</label>
             <input
               type="number"
               value={formData.profit_loss}
@@ -143,58 +112,33 @@ export function NewBacktest() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-2">
-              Win Rate (%)
-            </label>
+            <label className="block text-sm font-medium text-gray-400 mb-2">Win Rate (%)</label>
             <input
               type="number"
               min="0"
               max="100"
               value={formData.win_rate}
-              onChange={(e) =>
-                setFormData({ ...formData, win_rate: parseFloat(e.target.value) })
-              }
+              onChange={(e) => setFormData({ ...formData, win_rate: parseFloat(e.target.value) })}
               className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white"
               required
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-2">
-              Start Date
-            </label>
-            <input
-              type="date"
-              value={formData.start_date}
-              onChange={(e) =>
-                setFormData({ ...formData, start_date: e.target.value })
-              }
-              className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white"
-              required
-            />
+            <label className="block text-sm font-medium text-gray-400 mb-2">Start Date</label>
+            <input type="date" value={formData.start_date} onChange={(e) => setFormData({ ...formData, start_date: e.target.value })} className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white" required />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-2">
-              End Date
-            </label>
-            <input
-              type="date"
-              value={formData.end_date}
-              onChange={(e) =>
-                setFormData({ ...formData, end_date: e.target.value })
-              }
-              className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white"
-              required
-            />
+            <label className="block text-sm font-medium text-gray-400 mb-2">End Date</label>
+            <input type="date" value={formData.end_date} onChange={(e) => setFormData({ ...formData, end_date: e.target.value })} className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white" required />
           </div>
         </div>
 
-        <button
-          type="submit"
-          className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
-        >
+        <button type="submit" className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors">
           Save Backtest
         </button>
       </form>
+      {/* Copyright Section */}
+      <div className="mt-10 text-center text-gray-500 text-sm">© {new Date().getFullYear()} RizsFx. All rights reserved.</div>
     </div>
   );
 }

@@ -10,4 +10,5 @@ export interface BacktestData {
   profit_loss: number;
   win_rate: number;
   created_at: string;
+  lot_size: number;
 }

@@ -5,23 +5,33 @@ import { AuthForm } from './components/AuthForm';
 import { Dashboard } from './components/Dashboard';
 import { NewBacktest } from './components/NewBacktest';
 import { Performance } from './components/Performance';
+import { SettingsPage } from './components/SettingsPage';
 import { Sidebar } from './components/Sidebar';
 import { supabase } from './lib/supabase';
+import { ThemeProvider } from './components/ThemeContext';
+
+interface User {
+  email: string;
+  user_metadata?: {
+    avatar_url?: string;
+    full_name?: string;
+  };
+}
 
 function App() {
-  const [user, setUser] = useState<unknown>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
+      setUser((session?.user as User) ?? null);
       setLoading(false);
     });
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
+      setUser((session?.user as User) ?? null);
     });
 
     return () => subscription.unsubscribe();
@@ -51,25 +61,25 @@ function App() {
   }
 
   return (
-    <>
+    <ThemeProvider>
       <Toaster position="top-right" />
       <BrowserRouter>
         <div className="flex">
           <Sidebar user={user} />
-          <main className="flex-1 bg-gray-900 min-h-screen">
+          <main className="flex-1 bg-gray-900 min-h-screen pt-8">
+            {' '}
+            {/* Tambahkan padding-top (pt-16) */}
             <Routes>
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/new-backtest" element={<NewBacktest />} />
               <Route path="/performance" element={<Performance />} />
-              <Route path="/daily-report" element={<Performance />} />
-              <Route path="/weekly-report" element={<Performance />} />
-              <Route path="/monthly-report" element={<Performance />} />
+              <Route path="/settings" element={<SettingsPage />} />
               <Route path="/" element={<Navigate to="/dashboard" />} />
             </Routes>
           </main>
         </div>
       </BrowserRouter>
-    </>
+    </ThemeProvider>
   );
 }
 
