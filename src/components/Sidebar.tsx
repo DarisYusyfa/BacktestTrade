@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, LineChart, Settings, LogOut, Plus, Menu, X } from 'lucide-react';
 import { supabase } from '../lib/supabase';
@@ -16,7 +16,7 @@ interface SidebarProps {
 export function Sidebar({ user }: SidebarProps) {
   const location = useLocation();
   const navigate = useNavigate();
-  const [isOpen, setIsOpen] = useState(false); // State untuk mengontrol buka/tutup sidebar
+  const [isOpen, setIsOpen] = React.useState(false); // State untuk mengontrol buka/tutup sidebar
 
   const handleLogout = async () => {
     await supabase.auth.signOut();

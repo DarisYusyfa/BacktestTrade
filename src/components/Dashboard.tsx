@@ -4,6 +4,7 @@ import { BacktestData } from '../types/backtest';
 import { LineChart, BarChart2, TrendingUp, Plus } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import CountUp from 'react-countup'; // Import CountUp
 
 export function Dashboard() {
   const navigate = useNavigate();
@@ -94,9 +95,13 @@ export function Dashboard() {
                           <td className="py-4">{backtest.strategy_name}</td>
                           <td className="py-4 hidden sm:table-cell">{backtest.instrument}</td>
                           <td className="py-4 hidden sm:table-cell">{backtest.timeframe}</td>
-                          <td className="py-4">{backtest.win_rate}%</td>
                           <td className="py-4">
-                            <span className={backtest.profit_loss >= 0 ? 'text-green-500' : 'text-red-500'}>${backtest.profit_loss.toLocaleString()}</span>
+                            <CountUp end={backtest.win_rate} duration={2} decimals={2} suffix="%" />
+                          </td>
+                          <td className="py-4">
+                            <span className={backtest.profit_loss >= 0 ? 'text-green-500' : 'text-red-500'}>
+                              <CountUp end={backtest.profit_loss} duration={2} prefix="$" decimals={2} />
+                            </span>
                           </td>
                           <td className="py-4 hidden sm:table-cell">{new Date(backtest.created_at).toLocaleDateString()}</td>
                         </tr>
@@ -130,12 +135,17 @@ export function Dashboard() {
 }
 
 function SummaryCard({ icon, label, value }: { icon: JSX.Element; label: string; value: string | number }) {
+  const numericValue = typeof value === 'string' ? parseFloat(value.replace(/[^0-9.-]+/g, '')) : value;
+  const suffix = typeof value === 'string' && value.includes('%') ? '%' : '';
+
   return (
     <div className="bg-gray-800 p-4 sm:p-6 rounded-xl border border-gray-700 flex items-center gap-4">
       <div className="p-3 bg-blue-500/20 rounded-lg">{icon}</div>
       <div>
         <p className="text-gray-400">{label}</p>
-        <p className="text-2xl font-bold">{value}</p>
+        <p className="text-2xl font-bold">
+          <CountUp end={numericValue} duration={2.5} decimals={typeof value === 'string' && value.includes('.') ? 2 : 0} suffix={suffix} />
+        </p>
       </div>
     </div>
   );
