@@ -11,7 +11,7 @@ export function Dashboard() {
   const [backtests, setBacktests] = useState<BacktestData[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = 4; // Ubah dari 10 menjadi 4
 
   useEffect(() => {
     fetchBacktests();
@@ -21,9 +21,7 @@ export function Dashboard() {
     try {
       const { data: userData, error: userError } = await supabase.auth.getUser();
       if (userError || !userData.user) throw new Error('No user found');
-
       const { data, error } = await supabase.from('backtests').select('*').eq('user_id', userData.user.id).order('created_at', { ascending: false });
-
       if (error) throw error;
       setBacktests(data || []);
     } catch (error) {
@@ -137,7 +135,6 @@ export function Dashboard() {
 function SummaryCard({ icon, label, value }: { icon: JSX.Element; label: string; value: string | number }) {
   const numericValue = typeof value === 'string' ? parseFloat(value.replace(/[^0-9.-]+/g, '')) : value;
   const suffix = typeof value === 'string' && value.includes('%') ? '%' : '';
-
   return (
     <div className="bg-gray-800 p-4 sm:p-6 rounded-xl border border-gray-700 flex items-center gap-4">
       <div className="p-3 bg-blue-500/20 rounded-lg">{icon}</div>
