@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { supabase } from '../lib/supabase';
 import { BacktestData } from '../types/backtest';
 import { LineChart, BarChart2, TrendingUp, Plus, ArrowDown } from 'lucide-react';
